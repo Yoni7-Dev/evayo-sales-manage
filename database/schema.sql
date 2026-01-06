@@ -1,0 +1,149 @@
+-- -- Evayo7 Bakery Sales Management Database Schema
+-- -- Run this script to set up your MySQL database
+
+-- CREATE DATABASE IF NOT EXISTS evayo7_db;
+-- USE evayo7_db;
+
+-- -- Users Table for Authentication
+-- CREATE TABLE IF NOT EXISTS users (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     username VARCHAR(50) NOT NULL UNIQUE,
+--     email VARCHAR(100) NOT NULL UNIQUE,
+--     password VARCHAR(255) NOT NULL,
+--     full_name VARCHAR(100) NOT NULL,
+--     role ENUM('admin', 'manager', 'staff') DEFAULT 'staff',
+--     is_active BOOLEAN DEFAULT TRUE,
+--     last_login TIMESTAMP NULL,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- );
+
+-- -- Insert default admin user (password: admin123)
+-- -- Note: In production, change this password immediately!
+-- INSERT INTO users (username, email, password, full_name, role) VALUES
+-- ('admin', 'admin@evayo7.com', '$2b$10$rQZ5Q3z5z5z5z5z5z5z5zOJz5z5z5z5z5z5z5z5z5z5z5z5z5z5z', 'Administrator', 'admin');
+
+-- -- Bread Types Table
+-- CREATE TABLE IF NOT EXISTS bread_types (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(100) NOT NULL,
+--     description VARCHAR(255),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+
+-- -- Insert default bread types
+-- INSERT INTO bread_types (name, description) VALUES
+-- ('Donut', 'Sweet fried dough confection'),
+-- ('Muffin', 'Individual-sized baked product'),
+-- ('Bagel', 'Dense ring-shaped bread'),
+-- ('White Bread', 'Classic white loaf bread'),
+-- ('Whole Wheat Bread', 'Healthy whole grain bread'),
+-- ('Sourdough', 'Tangy fermented bread'),
+-- ('Croissant', 'Flaky French pastry'),
+-- ('Baguette', 'Long French bread'),
+-- ('Rye Bread', 'Dark bread with rye flour'),
+-- ('Ciabatta', 'Italian white bread');
+
+-- -- Employee Positions Table
+-- CREATE TABLE IF NOT EXISTS employee_positions (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     position_name VARCHAR(100) NOT NULL,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+
+-- -- Insert default positions
+-- INSERT INTO employee_positions (position_name) VALUES
+-- ('Manager'),
+-- ('Baker'),
+-- ('Cashier'),
+-- ('Delivery Driver'),
+-- ('Assistant Baker'),
+-- ('Store Clerk'),
+-- ('Supervisor');
+
+-- -- Employees Table
+-- CREATE TABLE IF NOT EXISTS employees (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(100) NOT NULL,
+--     position_id INT NOT NULL,
+--     salary DECIMAL(10, 2) NOT NULL,
+--     hire_date DATE NOT NULL,
+--     phone VARCHAR(20),
+--     email VARCHAR(100),
+--     is_active BOOLEAN DEFAULT TRUE,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (position_id) REFERENCES employee_positions(id)
+-- );
+
+-- -- Sales Table (with salesperson and user tracking)
+-- CREATE TABLE IF NOT EXISTS sales (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     bread_type_id INT NOT NULL,
+--     salesperson_id INT,
+--     user_id INT,
+--     quantity INT NOT NULL,
+--     single_price DECIMAL(10, 2) NOT NULL,
+--     total_price DECIMAL(10, 2) NOT NULL,
+--     sale_date DATE NOT NULL,
+--     notes VARCHAR(255),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (bread_type_id) REFERENCES bread_types(id),
+--     FOREIGN KEY (salesperson_id) REFERENCES employees(id),
+--     FOREIGN KEY (user_id) REFERENCES users(id)
+-- );
+
+-- -- Employee Monthly Expenses Table
+-- CREATE TABLE IF NOT EXISTS employee_expenses (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     employee_id INT NOT NULL,
+--     expense_month DATE NOT NULL,
+--     salary_paid DECIMAL(10, 2) NOT NULL,
+--     bonus DECIMAL(10, 2) DEFAULT 0,
+--     deductions DECIMAL(10, 2) DEFAULT 0,
+--     total_expense DECIMAL(10, 2) NOT NULL,
+--     notes VARCHAR(255),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (employee_id) REFERENCES employees(id)
+-- );
+
+-- -- Other Expense Categories Table
+-- CREATE TABLE IF NOT EXISTS expense_categories (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     category_name VARCHAR(100) NOT NULL,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+
+-- -- Insert default expense categories
+-- INSERT INTO expense_categories (category_name) VALUES
+-- ('Rent'),
+-- ('Utilities'),
+-- ('Ingredients'),
+-- ('Equipment'),
+-- ('Maintenance'),
+-- ('Marketing'),
+-- ('Transportation'),
+-- ('Insurance'),
+-- ('Packaging'),
+-- ('Miscellaneous');
+
+-- -- Other Expenses Table
+-- CREATE TABLE IF NOT EXISTS other_expenses (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     category_id INT NOT NULL,
+--     amount DECIMAL(10, 2) NOT NULL,
+--     expense_date DATE NOT NULL,
+--     description VARCHAR(255),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (category_id) REFERENCES expense_categories(id)
+-- );
+
+-- -- Activity Log Table
+-- CREATE TABLE IF NOT EXISTS activity_log (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     user_id INT NOT NULL,
+--     action VARCHAR(50) NOT NULL,
+--     description VARCHAR(255),
+--     ip_address VARCHAR(45),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (user_id) REFERENCES users(id)
+-- );
